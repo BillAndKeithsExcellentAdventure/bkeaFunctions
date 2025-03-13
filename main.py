@@ -1,5 +1,6 @@
 import azure.functions as func
 import logging
+import json
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
@@ -17,7 +18,11 @@ def ConfigTest(req: func.HttpRequest) -> func.HttpResponse:
             name = req_body.get('name')
 
     if name:
-        return func.HttpResponse(f"Howdy Tester, {name}. This HTTP triggered function executed successfully.")
+        response = {
+            "name": name,
+            "msg": "You successfully called this function"
+        }
+        return func.HttpResponse(json.dumps(response), mimetype="application/json")
     else:
         return func.HttpResponse(
              "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",

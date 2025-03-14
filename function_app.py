@@ -21,7 +21,7 @@ def Configuration(req: func.HttpRequest) -> func.HttpResponse:
     if version:
         newVersion =  os.getenv('BKEA_Version')
         response = {
-                "version": newVersion,
+                "version": int(newVersion),
                 "backendUrl": os.getenv('BKEA_BackendUrl')        
         }
         

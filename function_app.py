@@ -1,6 +1,7 @@
 import azure.functions as func
 import logging
 import json
+import os
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
@@ -8,23 +9,25 @@ app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 def Configuration(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
-    name = req.params.get('name')
+    version = req.params.get('version')
     if not name:
         try:
             req_body = req.get_json()
         except ValueError:
             pass
         else:
-            name = req_body.get('name')
+            version = req_body.get('version')
 
-    if name:
+    if version:
+        newVersion =  os.getenv('BKEA_Version')
         response = {
-            "name": name,
-            "msg": "You successfully called this function"
+                "version": newVersion,
+                "backendUrl": os.getenv('BKEA_BackendUrl')        
         }
+        
         return func.HttpResponse(json.dumps(response), mimetype="application/json")
     else:
         return func.HttpResponse(
-             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
+             "This HTTP triggered function executed successfully. Pass a version in the query string or in the request body to get a resposne.",
              status_code=200
         )
